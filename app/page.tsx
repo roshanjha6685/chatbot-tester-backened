@@ -105,7 +105,7 @@ body{background:#f1f5f9;color:#1e293b;min-height:100vh}
 @keyframes typing{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes popIn{0%{transform:scale(.85);opacity:0}100%{transform:scale(1);opacity:1}}
 .wrap{max-width:680px;margin:0 auto;padding:40px 20px 80px}
-.top-logo{font-size:20px;font-weight:800;margin-bottom:30px;display:flex;align-items:center;gap:8px}
+.top-logo{font-size:18px;font-weight:800;margin-bottom:30px;display:flex;align-items:center;gap:8px}
 .top-logo span{font-size:13px;font-weight:500;}
 .stepper{display:flex;align-items:flex-start;gap:0;margin-bottom:36px;position:relative}
 .stepper::before{content:'';position:absolute;top:18px;left:18px;right:18px;height:2px;background:#e2e8f0;z-index:0}
@@ -454,7 +454,7 @@ const scriptStr = `<script src="${API_BASE}/widget.js?botId=${botId}" defer><\/s
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
       <div className="wrap">
-        <div className="top-logo">🤖 Chatbot Builder <span>Create AI bots in minutes</span></div>
+        <div className="top-logo">🤖 Chatbot-Builder <span>Create AI bots in minutes</span></div>
 
       
         <div className="stepper">
