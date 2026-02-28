@@ -1,0 +1,10 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '--build-arg', 'NEXT_PUBLIC_API_BASE_URL=https://chatbot-tester-824567488306.asia-south1.run.app', '-t', 'gcr.io/absolute-access-482708-p3/chatbot-frontend', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/absolute-access-482708-p3/chatbot-frontend']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args: ['gcloud', 'run', 'deploy', 'chatbot-frontend', '--image', 'gcr.io/absolute-access-482708-p3/chatbot-frontend', '--region', 'asia-south1', '--platform', 'managed', '--allow-unauthenticated', '--port', '3000']
+images: ['gcr.io/absolute-access-482708-p3/chatbot-frontend']
+options:
+  logging: CLOUD_LOGGING_ONLY
