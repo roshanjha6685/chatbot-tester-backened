@@ -134,7 +134,39 @@ textarea.form-input{resize:vertical;min-height:85px;line-height:1.6}
 .upload-zone{border:2px dashed #e2e8f0;border-radius:14px;padding:36px 20px;text-align:center;cursor:pointer;transition:all .2s;background:#fafbfc}
 .upload-zone:hover,.upload-zone.drag{border-color:#00d4aa;background:rgba(0,212,170,.03)}
 .upload-icon{font-size:36px;margin-bottom:10px}
-.upload-title{font-size:14px;font-weight:600;color:#0f172a;margin-bottom:3px}
+.upload-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 3px;
+}
+
+
+.status-badge {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 100px;
+  padding: 4px 13px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+@media (max-width: 768px) {
+  .status-badge {
+    font-size: 6px;
+  }
+}
+
+@media (max-width: 768px) {
+  .upload-title {
+    font-size: 6px;
+  }
+}
 .upload-hint{font-size:12px;color:#94a3b8}
 .prog-wrap{height:4px;background:#e2e8f0;border-radius:2px;margin-top:10px;overflow:hidden;max-width:200px;margin-left:auto;margin-right:auto}
 .prog-fill{height:100%;background:#00d4aa;border-radius:2px;transition:width .4s ease}
@@ -490,12 +522,7 @@ const scriptStr = `<script src="${API_BASE}/widget.js?botId=${botId}" defer><\/s
                 )}
 
                 {pdfData && prog >= 100 && !busy && (
-                  <div style={{
-                    marginTop: 10, display: "inline-flex", alignItems: "center",
-                    gap: 6, background: "#f0fdf4", border: "1px solid #bbf7d0",
-                    borderRadius: 100, padding: "4px 13px", fontSize: 12,
-                    fontWeight: 600, color: "#16a34a",
-                  }}>
+                  <div className="status-badge">
                     ✅ {pdfData.name}
                     <span
                       style={{ marginLeft: 4, color: "#94a3b8", cursor: "pointer" }}
