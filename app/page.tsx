@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, FC, KeyboardEvent, DragEvent, ChangeEvent } from "react";
+import BotMessage from "./components/RenderBotMessage";
 
 
 interface Preset {
@@ -60,36 +61,36 @@ interface PositionOption {
 
 
 const PRESETS: Preset[] = [
-  { name: "Ocean",  primary: "#00d4aa", bg: "#0a1628" },
+  { name: "Ocean", primary: "#00d4aa", bg: "#0a1628" },
   { name: "Sunset", primary: "#f97316", bg: "#1e0e05" },
-  { name: "Royal",  primary: "#7c3aed", bg: "#0f0720" },
+  { name: "Royal", primary: "#7c3aed", bg: "#0f0720" },
   { name: "Cherry", primary: "#e11d48", bg: "#1e0510" },
   { name: "Forest", primary: "#22c55e", bg: "#061510" },
-  { name: "Gold",   primary: "#eab308", bg: "#1a1504" },
+  { name: "Gold", primary: "#eab308", bg: "#1a1504" },
 ];
 
 const FONTS: string[] = ["Plus Jakarta Sans", "Syne", "Georgia", "Courier New"];
 
 const BUBBLES: BubbleOption[] = [
   { val: "circle", emoji: "⭕", label: "Round" },
-  { val: "soft",   emoji: "💬", label: "Soft"  },
+  { val: "soft", emoji: "💬", label: "Soft" },
   { val: "square", emoji: "⬛", label: "Square" },
 ];
 
-const AVATARS: string[] = ["🤖","🧑‍🏫","🦉","🐼","🚀","🌟","💡","🎓","🏫","🦊"];
+const AVATARS: string[] = ["🤖", "🧑‍🏫", "🦉", "🐼", "🚀", "🌟", "💡", "🎓", "🏫", "🦊"];
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
 
 const STEP_DEFS: StepDef[] = [
   { label: "Upload PDF" },
-  { label: "Bot Info"   },
-  { label: "Theme"      },
+  { label: "Bot Info" },
+  { label: "Theme" },
   { label: "Get Script" },
 ];
 
 const POSITION_OPTIONS: PositionOption[] = [
   { v: "right", l: "↘ Bottom Right" },
-  { v: "left",  l: "↙ Bottom Left"  },
+  { v: "left", l: "↙ Bottom Left" },
 ];
 
 
@@ -242,8 +243,8 @@ textarea.form-input{resize:vertical;min-height:85px;line-height:1.6}
 const MiniPreview: FC<MiniPreviewProps> = ({ theme, botInfo }) => {
   const br =
     theme.bubble === "circle" ? "50%"
-    : theme.bubble === "square" ? "8px"
-    : "32%";
+      : theme.bubble === "square" ? "8px"
+        : "32%";
 
   const msgBr =
     theme.bubble === "square"
@@ -293,25 +294,25 @@ const defaultTheme = (): Theme => ({
 
 
 export default function ChatbotBuilder() {
-  const [step, setStep]         = useState<number>(0);
-  const [pdfData, setPdfData]   = useState<PdfData | null>(null);
-  const [prog, setProg]         = useState<number>(0);
-  const [busy, setBusy]         = useState<boolean>(false);
-  const [drag, setDrag]         = useState<boolean>(false);
-  const [botInfo, setBotInfo]   = useState<BotInfo>(defaultBotInfo);
-  const [theme, setTheme]       = useState<Theme>(defaultTheme);
-  const [msgs, setMsgs]         = useState<ChatMessage[] | null>(null);
-  const [chatIn, setChatIn]     = useState<string>("");
+  const [step, setStep] = useState<number>(0);
+  const [pdfData, setPdfData] = useState<PdfData | null>(null);
+  const [prog, setProg] = useState<number>(0);
+  const [busy, setBusy] = useState<boolean>(false);
+  const [drag, setDrag] = useState<boolean>(false);
+  const [botInfo, setBotInfo] = useState<BotInfo>(defaultBotInfo);
+  const [theme, setTheme] = useState<Theme>(defaultTheme);
+  const [msgs, setMsgs] = useState<ChatMessage[] | null>(null);
+  const [chatIn, setChatIn] = useState<string>("");
   const [thinking, setThinking] = useState<boolean>(false);
-  const [copied, setCopied]     = useState<boolean>(false);
+  const [copied, setCopied] = useState<boolean>(false);
 
   const fileRef = useRef<HTMLInputElement>(null);
-  const endRef  = useRef<HTMLDivElement>(null);
+  const endRef = useRef<HTMLDivElement>(null);
 
 
   useEffect(() => {
     const link = document.createElement("link");
-    link.rel  = "stylesheet";
+    link.rel = "stylesheet";
     link.href =
       "https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap";
     document.head.appendChild(link);
@@ -321,8 +322,8 @@ export default function ChatbotBuilder() {
 
   const setB =
     <K extends keyof BotInfo>(key: K) =>
-    (value: BotInfo[K]): void =>
-      setBotInfo(prev => ({ ...prev, [key]: value }));
+      (value: BotInfo[K]): void =>
+        setBotInfo(prev => ({ ...prev, [key]: value }));
 
 
   const setT = (patch: Partial<Theme>): void =>
@@ -332,17 +333,26 @@ export default function ChatbotBuilder() {
 
 
   useEffect(() => {
+
+    fetch(`${API_BASE}/api/bot/${botId}/config`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ botId, ...botInfo, theme }),
+    });
+
     if (step === 3 && !msgs) {
       setMsgs([{ role: "bot", text: botInfo.welcome || "Hi there! 👋 How can I help?" }]);
     }
   }, [step]);
+
+
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [msgs, thinking]);
 
 
-const handleFile = (file: File | null | undefined): void => {
+  const handleFile = (file: File | null | undefined): void => {
     if (!file) return;
     if (!file.name.endsWith(".pdf")) { alert("PDF only please!"); return; }
 
@@ -383,7 +393,7 @@ const handleFile = (file: File | null | undefined): void => {
   };
 
 
-const sendChat = async (): Promise<void> => {
+  const sendChat = async (): Promise<void> => {
     if (!chatIn.trim() || thinking) return;
 
     const msg = chatIn.trim();
@@ -429,7 +439,7 @@ const sendChat = async (): Promise<void> => {
   //   ` data-position="${theme.position}" defer></script>`;
 
 
-const scriptStr = `<script src="${API_BASE}/widget.js?botId=${botId}" defer><\/script>`;
+  const scriptStr = `<script src="${API_BASE}/widget.js?botId=${botId}" defer><\/script>`;
 
 
   const handleCopy = (): void => {
@@ -450,13 +460,18 @@ const scriptStr = `<script src="${API_BASE}/widget.js?botId=${botId}" defer><\/s
   };
 
 
+
+
+
+
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
       <div className="wrap">
         <div className="top-logo">🤖 Chatbot-Builder <span>Create AI bots in minutes</span></div>
 
-      
+
         <div className="stepper">
           <div
             className="step-track"
@@ -474,7 +489,7 @@ const scriptStr = `<script src="${API_BASE}/widget.js?botId=${botId}" defer><\/s
               style={{ cursor: i < step ? "pointer" : "default" }}
             >
               <div className="step-circle">{i < step ? "✓" : i + 1}</div>
-              <div className="step-lbl" style={{color:"black"}}>{s.label}</div>
+              <div className="step-lbl" style={{ color: "black" }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -574,7 +589,7 @@ const scriptStr = `<script src="${API_BASE}/widget.js?botId=${botId}" defer><\/s
                 </div>
               </div>
 
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label className="form-label">Tagline</label>
                 <input
                   className="form-input"
@@ -582,7 +597,7 @@ const scriptStr = `<script src="${API_BASE}/widget.js?botId=${botId}" defer><\/s
                   value={botInfo.tagline}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setB("tagline")(e.target.value)}
                 />
-              </div>
+              </div> */}
 
               <div className="form-group">
                 <label className="form-label">Welcome Message</label>
@@ -594,7 +609,7 @@ const scriptStr = `<script src="${API_BASE}/widget.js?botId=${botId}" defer><\/s
                 />
               </div>
 
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label className="form-label">Personality / Instructions</label>
                 <textarea
                   className="form-input"
@@ -603,7 +618,7 @@ const scriptStr = `<script src="${API_BASE}/widget.js?botId=${botId}" defer><\/s
                   onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setB("instructions")(e.target.value)}
                 />
                 <div className="form-hint">Internal instructions shaping how your bot responds</div>
-              </div>
+              </div> */}
 
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Topics to focus on</label>
@@ -759,7 +774,7 @@ const scriptStr = `<script src="${API_BASE}/widget.js?botId=${botId}" defer><\/s
               <div className="success-banner">
                 <div style={{ fontSize: 36, marginBottom: 8 }}>🎉</div>
                 <div style={{
-                   fontSize: 18,
+                  fontSize: 18,
                   fontWeight: 800, color: "#0f172a", marginBottom: 4,
                 }}>
                   {botInfo.name || "Your Chatbot"} is ready!
@@ -780,12 +795,12 @@ const scriptStr = `<script src="${API_BASE}/widget.js?botId=${botId}" defer><\/s
                 on your website:
               </p>
 
-          <div className="code-block">
-  <button className="copy-btn" onClick={handleCopy}>
-    {copied ? "✓ Copied!" : "Copy"}
-  </button>
-  {scriptStr}
-</div>
+              <div className="code-block">
+                <button className="copy-btn" onClick={handleCopy}>
+                  {copied ? "✓ Copied!" : "Copy"}
+                </button>
+                {scriptStr}
+              </div>
               <div className="divider" style={{ margin: "20px 0" }} />
               <div className="sec-title">🧪 Test Your Bot Live</div>
               <p style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>
@@ -803,7 +818,10 @@ const scriptStr = `<script src="${API_BASE}/widget.js?botId=${botId}" defer><\/s
                 <div className="chat-msgs">
                   {(msgs ?? []).map((m, i) => (
                     <div key={i} className={m.role === "user" ? "msg-user" : "msg-bot"}>
-                      {m.text}
+                      {m.role === "bot"
+                        ? <BotMessage text={m.text} accentColor={theme.primary} />
+                        : m.text
+                      }
                     </div>
                   ))}
                   {thinking && (
